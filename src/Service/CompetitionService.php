@@ -8,13 +8,13 @@ use App\Parser\Parser;
 
 class CompetitionService
 {
-    protected Loader $loader;
-    protected Parser $parser;
+    protected DataService $dataService;
+    protected Parser      $parser;
 
-    public function __construct(Loader $loader, Parser $parser)
+    public function __construct(DataService $dataService, Parser $parser)
     {
-        $this->loader = $loader;
-        $this->parser = $parser;
+        $this->dataService = $dataService;
+        $this->parser      = $parser;
     }
 
 }
