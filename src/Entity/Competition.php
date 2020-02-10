@@ -4,6 +4,7 @@
 namespace App\Entity;
 
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,12 +32,12 @@ class Competition
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $deadline;
+    private DateTime $deadline;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTime $resultsDate;
+    private DateTime $resultsDate;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -52,6 +53,11 @@ class Competition
      * @ORM\Column(type="string", length=255)
      */
     private string $requirements;
+
+    /**
+     * @ORM\Column(type="string", length=64, unique=true)
+     */
+    private string $hash;
 
     /**
      * @return int
@@ -102,33 +108,33 @@ class Competition
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDeadline() : \DateTime
+    public function getDeadline() : DateTime
     {
         return $this->deadline;
     }
 
     /**
-     * @param \DateTime $deadline
+     * @param DateTime $deadline
      */
-    public function setDeadline(\DateTime $deadline) : void
+    public function setDeadline(DateTime $deadline) : void
     {
         $this->deadline = $deadline;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getResultsDate() : \DateTime
+    public function getResultsDate() : DateTime
     {
         return $this->resultsDate;
     }
 
     /**
-     * @param \DateTime $resultsDate
+     * @param DateTime $resultsDate
      */
-    public function setResultsDate(\DateTime $resultsDate) : void
+    public function setResultsDate(DateTime $resultsDate) : void
     {
         $this->resultsDate = $resultsDate;
     }
@@ -179,5 +185,35 @@ class Competition
     public function setRequirements(string $requirements) : void
     {
         $this->requirements = $requirements;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash() : string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param string $hash
+     */
+    public function setHash(string $hash) : void
+    {
+        $this->hash = $hash;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName()
+            . $this->getApplicationForm()
+            . $this->getGrantSize()
+            . $this->getRequirements()
+            . $this->getIndustry()->getName()
+            . $this->getResultsDate()->format('c')
+            . $this->getDeadline()->format('c');
     }
 }

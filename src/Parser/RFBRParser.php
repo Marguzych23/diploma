@@ -13,8 +13,12 @@ use App\Entity\Competition;
  */
 class RFBRParser extends Parser
 {
-    public function parse(string $data): Competition
+    public function parse(string $data) : Competition
     {
-        // TODO: Implement parse() method.
+        $competition = new Competition();
+
+        $competition->setName('asddsa');
+
+        return $competition;
     }
 }

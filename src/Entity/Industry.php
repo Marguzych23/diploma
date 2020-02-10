@@ -30,6 +30,11 @@ class Industry
      */
     private $competitions;
 
+    public function __construct()
+    {
+        $this->competitions = new ArrayCollection();
+    }
+
     /**
      * @return int
      */
