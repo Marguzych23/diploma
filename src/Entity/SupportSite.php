@@ -3,13 +3,14 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\IndustryRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\SupportSiteRepository")
  */
-class Industry
+class SupportSite
 {
     /**
      * @ORM\Id
@@ -19,16 +20,24 @@ class Industry
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private string $name;
 
     /**
-     * @var Competition[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Competition", mappedBy="industry")
+     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $competitions;
+    private string $abbreviation;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $url;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $competitions_page_url;
 
     /**
      * @var SupportSitesIndustry[]|ArrayCollection
@@ -38,11 +47,10 @@ class Industry
     private $supportSitesIndustries;
 
     /**
-     * Industry constructor.
+     * SupportSite constructor.
      */
     public function __construct()
     {
-        $this->competitions           = new ArrayCollection();
         $this->supportSitesIndustries = new ArrayCollection();
     }
 
@@ -79,19 +87,19 @@ class Industry
     }
 
     /**
-     * @return Competition[]|ArrayCollection
+     * @return string
      */
-    public function getCompetitions()
+    public function getAbbreviation() : string
     {
-        return $this->competitions;
+        return $this->abbreviation;
     }
 
     /**
-     * @param Competition[]|ArrayCollection $competitions
+     * @param string $abbreviation
      */
-    public function setCompetitions($competitions) : void
+    public function setAbbreviation(string $abbreviation) : void
     {
-        $this->competitions = $competitions;
+        $this->abbreviation = $abbreviation;
     }
 
     /**
@@ -108,5 +116,37 @@ class Industry
     public function setSupportSitesIndustries($supportSitesIndustries) : void
     {
         $this->supportSitesIndustries = $supportSitesIndustries;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl() : string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl(string $url) : void
+    {
+        $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCompetitionsPageUrl() : string
+    {
+        return $this->competitions_page_url;
+    }
+
+    /**
+     * @param string $competitions_page_url
+     */
+    public function setCompetitionsPageUrl(string $competitions_page_url) : void
+    {
+        $this->competitions_page_url = $competitions_page_url;
     }
 }

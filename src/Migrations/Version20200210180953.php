@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace DoctrineMigrations;
 
@@ -25,6 +25,16 @@ final class Version20200210180953 extends AbstractMigration
         $this->addSql('CREATE TABLE competition (id INT AUTO_INCREMENT NOT NULL, industry_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, deadline DATETIME NOT NULL, results_date DATETIME NOT NULL, grant_size VARCHAR(64) NOT NULL, application_form VARCHAR(255) NOT NULL, requirements VARCHAR(255) NOT NULL, INDEX IDX_B50A2CB12B19A734 (industry_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE industry (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE competition ADD CONSTRAINT FK_B50A2CB12B19A734 FOREIGN KEY (industry_id) REFERENCES industry (id)');
+        $this->addSql("INSERT INTO `industry` (`id`, `name`) VALUES
+                                (1,	'Математика, механика, информатика'),
+                                (2,	'Физика и науки о космосе'),
+                                (3,	'Химия и науки о материалах'),
+                                (4,	'Биология и медицинские науки'),
+                                (5,	'Науки о Земле'),
+                                (6,	'Гуманитарные и социальные науки'),
+                                (7,	'Инженерные науки'),
+                                (8,	'Сельскохозяйственные науки');"
+        );
     }
 
     public function down(Schema $schema) : void

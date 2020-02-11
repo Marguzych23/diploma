@@ -1,0 +1,99 @@
+<?php
+
+
+namespace App\Entity;
+
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\SupportSiteIndustryRepository")
+ */
+class SupportSitesIndustry
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private int $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $name;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Industry", inversedBy="supportSitesIndustries")
+     */
+    private Industry $industry;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\SupportSite", inversedBy="supportSitesIndustries")
+     */
+    private SupportSite $supportSite;
+
+    /**
+     * @return int
+     */
+    public function getId() : int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id) : void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name) : void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return Industry
+     */
+    public function getIndustry() : Industry
+    {
+        return $this->industry;
+    }
+
+    /**
+     * @param Industry $industry
+     */
+    public function setIndustry(Industry $industry) : void
+    {
+        $this->industry = $industry;
+    }
+
+    /**
+     * @return SupportSite
+     */
+    public function getSupportSite() : SupportSite
+    {
+        return $this->supportSite;
+    }
+
+    /**
+     * @param SupportSite $supportSite
+     */
+    public function setSupportSite(SupportSite $supportSite) : void
+    {
+        $this->supportSite = $supportSite;
+    }
+}
