@@ -1,8 +1,9 @@
 {
-  "name": "symfony/skeleton",
+  "name": "Diploma",
   "type": "project",
   "license": "proprietary",
-  "description": "A minimal Symfony project recommended to create bare bones applications",
+  "version": "0.0.0",
+  "description": "",
   "require": {
     "php": "^7.4",
     "ext-ctype": "*",
