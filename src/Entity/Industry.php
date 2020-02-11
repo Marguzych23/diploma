@@ -26,7 +26,7 @@ class Industry
     /**
      * @var Competition[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Competition", mappedBy="industry")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competition", mappedBy="industry")
      */
     private $competitions;
 

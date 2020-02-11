@@ -35,6 +35,7 @@ class CompetitionController extends AbstractController
             $status  = false;
             $message = $e->getMessage();
         }
+
         return $this->json([
             'status'  => $status,
             'message' => $message,

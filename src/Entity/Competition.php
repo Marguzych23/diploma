@@ -22,42 +22,38 @@ class Competition
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private string $name;
+    private ?string $name = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Industry", inversedBy="competitions")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Industry", inversedBy="competitions")
+     * @ORM\JoinTable(name="competitions_industries")
      */
-    private Industry $industry;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private DateTime $deadline;
+    private ?Industry $industry = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private DateTime $resultsDate;
+    private ?DateTime $deadline = null;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private ?DateTime $resultsDate = null;
 
     /**
      * @ORM\Column(type="string", length=64)
      */
-    private string $grantSize;
+    private ?string $grantSize = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private string $applicationForm;
+    private ?string $applicationForm = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private string $requirements;
-
-    /**
-     * @ORM\Column(type="string", length=64, unique=true)
-     */
-    private string $hash;
+    private ?string $requirements = null;
 
     /**
      * @return int
@@ -76,144 +72,114 @@ class Competition
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName() : string
+    public function getName() : ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
-    public function setName(string $name) : void
+    public function setName(?string $name) : void
     {
         $this->name = $name;
     }
 
     /**
-     * @return Industry
+     * @return Industry|null
      */
-    public function getIndustry() : Industry
+    public function getIndustry() : ?Industry
     {
         return $this->industry;
     }
 
     /**
-     * @param Industry $industry
+     * @param Industry|null $industry
      */
-    public function setIndustry(Industry $industry) : void
+    public function setIndustry(?Industry $industry) : void
     {
         $this->industry = $industry;
     }
 
     /**
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getDeadline() : DateTime
+    public function getDeadline() : ?DateTime
     {
         return $this->deadline;
     }
 
     /**
-     * @param DateTime $deadline
+     * @param DateTime|null $deadline
      */
-    public function setDeadline(DateTime $deadline) : void
+    public function setDeadline(?DateTime $deadline) : void
     {
         $this->deadline = $deadline;
     }
 
     /**
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getResultsDate() : DateTime
+    public function getResultsDate() : ?DateTime
     {
         return $this->resultsDate;
     }
 
     /**
-     * @param DateTime $resultsDate
+     * @param DateTime|null $resultsDate
      */
-    public function setResultsDate(DateTime $resultsDate) : void
+    public function setResultsDate(?DateTime $resultsDate) : void
     {
         $this->resultsDate = $resultsDate;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getGrantSize() : string
+    public function getGrantSize() : ?string
     {
         return $this->grantSize;
     }
 
     /**
-     * @param string $grantSize
+     * @param string|null $grantSize
      */
-    public function setGrantSize(string $grantSize) : void
+    public function setGrantSize(?string $grantSize) : void
     {
         $this->grantSize = $grantSize;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getApplicationForm() : string
+    public function getApplicationForm() : ?string
     {
         return $this->applicationForm;
     }
 
     /**
-     * @param string $applicationForm
+     * @param string|null $applicationForm
      */
-    public function setApplicationForm(string $applicationForm) : void
+    public function setApplicationForm(?string $applicationForm) : void
     {
         $this->applicationForm = $applicationForm;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRequirements() : string
+    public function getRequirements() : ?string
     {
         return $this->requirements;
     }
 
     /**
-     * @param string $requirements
+     * @param string|null $requirements
      */
-    public function setRequirements(string $requirements) : void
+    public function setRequirements(?string $requirements) : void
     {
         $this->requirements = $requirements;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash() : string
-    {
-        return $this->hash;
-    }
-
-    /**
-     * @param string $hash
-     */
-    public function setHash(string $hash) : void
-    {
-        $this->hash = $hash;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getName()
-            . $this->getApplicationForm()
-            . $this->getGrantSize()
-            . $this->getRequirements()
-            . $this->getIndustry()->getName()
-            . $this->getResultsDate()->format('c')
-            . $this->getDeadline()->format('c');
     }
 }

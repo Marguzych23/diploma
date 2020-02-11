@@ -5,6 +5,7 @@ namespace App\Service\Competition;
 
 
 use App\Entity\Competition;
+use App\Entity\Industry;
 use App\Exception\CompetitionException;
 use App\Parser\Parser;
 use App\Service\DataLoadService;
@@ -33,24 +34,23 @@ abstract class BaseService
      */
     public function addCompetitionByURL(?string $url)
     {
-        $data = $this->dataLoadService->loadFromURL($url);
+//        $data = $this->dataLoadService->loadFromURL($url);
+        $data = $this->dataLoadService->getHTML();
 
         $competition = $this->parser->parse($data);
 
-        if ($this->entityManager->getRepository(Competition::class)->findOneBy([
-                'hash' => $this->generateCompetitionHash($competition),
-            ]) === null) {
-            $this->entityManager->persist($competition);
-        }
-    }
+//        if ($this->entityManager->getRepository(Competition::class)->findOneBy([
+//                'requirements' => $competition->getRequirements(),
+//            ]) === null) {
+            var_dump($competition);
 
-    /**
-     * @param Competition $competition
-     *
-     * @return string
-     */
-    public function generateCompetitionHash(Competition $competition)
-    {
-        return md5(serialize($competition));
+//            $industry = $this->entityManager->getRepository(Industry::class)->findOneBy([
+//                'id' => 1,
+//            ]);
+//            $competition->setIndustry($industry);
+//
+//            $this->entityManager->persist($competition);
+//            $this->entityManager->flush();
+//        }
     }
 }
