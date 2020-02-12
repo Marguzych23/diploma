@@ -5,7 +5,6 @@ namespace App\Service\Competition;
 
 
 use App\Entity\SupportSite;
-use App\Entity\SupportSitesIndustry;
 use App\Exception\CompetitionException;
 use App\Exception\SupportSiteException;
 use App\Parser\Parser;
@@ -70,6 +69,7 @@ abstract class BaseService
         $data = DataLoadService::loadHTMLFromURL($url);
 
         $competition = $this->parser->parse($data);
+        $competition->setUrl($url);
 
 //        if ($this->entityManager->getRepository(Competition::class)->findOneBy([
 //                'requirements' => $competition->getRequirements(),

@@ -10,7 +10,7 @@ use App\Entity\SupportSitesIndustry;
 abstract class Parser
 {
     /** @var array|SupportSitesIndustry[] */
-    protected array $supportSiteIndustries;
+    protected ?array $supportSiteIndustries = null;
 
     /**
      * @param string $data

@@ -28,17 +28,12 @@ class Competition
      * @ORM\ManyToMany(targetEntity="App\Entity\Industry", inversedBy="competitions")
      * @ORM\JoinTable(name="competitions_industries")
      */
-    private ?Industry $industry = null;
+    private $industries = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
     private ?DateTime $deadline = null;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private ?DateTime $resultsDate = null;
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -48,12 +43,7 @@ class Competition
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $applicationForm = null;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private ?string $requirements = null;
+    private ?string $url = null;
 
     /**
      * @return int
@@ -88,19 +78,19 @@ class Competition
     }
 
     /**
-     * @return Industry|null
+     * @return null
      */
-    public function getIndustry() : ?Industry
+    public function getIndustries()
     {
-        return $this->industry;
+        return $this->industries;
     }
 
     /**
-     * @param Industry|null $industry
+     * @param null $industries
      */
-    public function setIndustry(?Industry $industry) : void
+    public function setIndustries($industries) : void
     {
-        $this->industry = $industry;
+        $this->industries = $industries;
     }
 
     /**
@@ -117,22 +107,6 @@ class Competition
     public function setDeadline(?DateTime $deadline) : void
     {
         $this->deadline = $deadline;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getResultsDate() : ?DateTime
-    {
-        return $this->resultsDate;
-    }
-
-    /**
-     * @param DateTime|null $resultsDate
-     */
-    public function setResultsDate(?DateTime $resultsDate) : void
-    {
-        $this->resultsDate = $resultsDate;
     }
 
     /**
@@ -154,32 +128,16 @@ class Competition
     /**
      * @return string|null
      */
-    public function getApplicationForm() : ?string
+    public function getUrl() : ?string
     {
-        return $this->applicationForm;
+        return $this->url;
     }
 
     /**
-     * @param string|null $applicationForm
+     * @param string|null $url
      */
-    public function setApplicationForm(?string $applicationForm) : void
+    public function setUrl(?string $url) : void
     {
-        $this->applicationForm = $applicationForm;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRequirements() : ?string
-    {
-        return $this->requirements;
-    }
-
-    /**
-     * @param string|null $requirements
-     */
-    public function setRequirements(?string $requirements) : void
-    {
-        $this->requirements = $requirements;
+        $this->url = $url;
     }
 }

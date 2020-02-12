@@ -4,8 +4,10 @@
 namespace App\Parser;
 
 use App\Entity\Competition;
+use App\Exception\CompetitionException;
 use DateTime;
 use Exception;
+use InvalidArgumentException;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -21,6 +23,7 @@ class RFBRParser extends Parser
         'Максимальный объем финансирования проекта',
         'Максимальный размер гранта',
     ];
+    const INDUSTRIES_KEYS = ['(', ')'];
 
     /**
      * @param string $data
@@ -35,8 +38,21 @@ class RFBRParser extends Parser
         $crawler = new Crawler();
         $crawler->addHtmlContent($data, 'windows-1251');
 
+//        Name
         $competition->setName($crawler->filterXPath('.//h1[@class="title js-print-title title"]')->text());
 
+//        Industries
+        $tempIndustries = [];
+        try {
+            $industriesContent = $crawler->filterXPath('.//div[@id="selectable-content"]/ul/li');
+
+            foreach ($industriesContent->getIterator() as $item) {
+                $tempIndustries[] = $item->textContent;
+            }
+        } catch (InvalidArgumentException $exception) {
+        }
+
+//        Other
         $selectableContent = $crawler->filterXPath('.//div[@id="selectable-content"]/p/strong');
         foreach ($selectableContent->getIterator() as $item) {
             if ($competition->getDeadline() === null
@@ -51,18 +67,35 @@ class RFBRParser extends Parser
                 } catch (Exception $e) {
                 }
             } elseif ($competition->getGrantSize() === null
-                && $this->isGrantSize($item->textContent)) {
+                && $this->isInArray($item->textContent, self::GRANT_SIZE_KEYS)
+            ) {
                 $childText = $item->textContent . (strpos($item->textContent, ':') !== false ? '' : ':');
                 $competition->setGrantSize(trim(str_replace($childText, '', $item->parentNode->textContent)));
-            } else {
-                var_dump($item->textContent);
+            } elseif ($this->isInArray($item->textContent, self::INDUSTRIES_KEYS, true)) {  // industry
+                $tempIndustries[] = $item->textContent;
             }
-
         }
 
-        $competition->setResultsDate(new DateTime());
-        $competition->setApplicationForm('');
-        $competition->setRequirements('');
+        if (empty($tempIndustries)) {
+            throw new CompetitionException();
+        } else {
+            $industries = [];
+            foreach ($tempIndustries as $tempIndustry) {
+                foreach ($this->getSupportSiteIndustries() as $supportSiteIndustry) {
+                    $isMatch = false;
+                    foreach ($supportSiteIndustry->getKeywords() as $keyword) {
+                        if (strpos($tempIndustry, $keyword) !== false) {
+                            $isMatch = true;
+                            break;
+                        }
+                    }
+                    if ($isMatch) {
+                        $industries[] = $supportSiteIndustry->getIndustry();
+                    }
+                }
+            }
+            $competition->setIndustries($industries);
+        }
 
         return $competition;
     }
@@ -70,16 +103,23 @@ class RFBRParser extends Parser
     /**
      * @param string $data
      *
+     * @param array  $keys
+     * @param bool   $fullMatch
+     *
      * @return bool
      */
-    protected function isGrantSize(string $data)
+    protected function isInArray(string $data, array $keys = [], bool $fullMatch = false)
     {
-        foreach (self::GRANT_SIZE_KEYS as $GRANT_SIZE_KEY) {
-            if (strpos($data, $GRANT_SIZE_KEY) !== false) {
-                return true;
+        foreach ($keys as $key) {
+            if (strpos($data, $key) !== false) {
+                if (!$fullMatch) {
+                    return true;
+                }
+            } elseif ($fullMatch) {
+                return false;
             }
         }
 
-        return false;
+        return $fullMatch;
     }
 }

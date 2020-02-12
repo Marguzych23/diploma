@@ -26,7 +26,7 @@ class SupportSitesIndustry
     /**
      * @ORM\Column(type="array", nullable=true)
      */
-    private array $keywords;
+    private ?array $keywords;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Industry", inversedBy="supportSitesIndustries")
