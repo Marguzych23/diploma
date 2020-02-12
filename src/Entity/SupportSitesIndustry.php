@@ -19,11 +19,6 @@ class SupportSitesIndustry
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private string $name;
-
-    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private ?array $keywords;
@@ -52,22 +47,6 @@ class SupportSitesIndustry
     public function setId(int $id) : void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName() : string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name) : void
-    {
-        $this->name = $name;
     }
 
     /**

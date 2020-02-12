@@ -4,6 +4,7 @@
 namespace App\Service\Competition;
 
 
+use App\Entity\Competition;
 use App\Entity\SupportSite;
 use App\Exception\CompetitionException;
 use App\Exception\SupportSiteException;
@@ -66,23 +67,14 @@ abstract class BaseService
      */
     public function addCompetitionByURL(?string $url) : void
     {
-        $data = DataLoadService::loadHTMLFromURL($url);
+        if ($this->entityManager->getRepository(Competition::class)->findOneBy(['url' => $url]) === null) {
+            $data = DataLoadService::loadHTMLFromURL($url);
 
-        $competition = $this->parser->parse($data);
-        $competition->setUrl($url);
+            $competition = $this->parser->parse($data);
+            $competition->setUrl($url);
 
-//        if ($this->entityManager->getRepository(Competition::class)->findOneBy([
-//                'requirements' => $competition->getRequirements(),
-//            ]) === null) {
-        var_dump($competition);
-
-//            $industry = $this->entityManager->getRepository(Industry::class)->findOneBy([
-//                'id' => 1,
-//            ]);
-//            $competition->setIndustry($industry);
-//
-//            $this->entityManager->persist($competition);
-//            $this->entityManager->flush();
-//        }
+            $this->entityManager->persist($competition);
+            $this->entityManager->flush();
+        }
     }
 }
