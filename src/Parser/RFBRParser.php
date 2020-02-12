@@ -33,7 +33,7 @@ class RFBRParser extends Parser
         $competition = new Competition();
 
         $crawler = new Crawler();
-        $crawler->addHtmlContent($this->convertToUTF8($data));
+        $crawler->addHtmlContent($data, 'windows-1251');
 
         $competition->setName($crawler->filterXPath('.//h1[@class="title js-print-title title"]')->text());
 
@@ -60,25 +60,11 @@ class RFBRParser extends Parser
 
         }
 
-//        $industry        = '';
-//        $resultsDate     = '';
-//        $applicationForm = '';
-//        $requirements    = '';
         $competition->setResultsDate(new DateTime());
         $competition->setApplicationForm('');
         $competition->setRequirements('');
 
         return $competition;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return false|string|string[]|null
-     */
-    protected function convertToUTF8(string $data)
-    {
-        return mb_convert_encoding($data, "UTF-8");
     }
 
     /**

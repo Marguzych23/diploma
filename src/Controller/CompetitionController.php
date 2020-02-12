@@ -4,8 +4,8 @@
 namespace App\Controller;
 
 
-use App\Exception\CompetitionException;
 use App\Service\Competition\RFBRService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,9 +29,8 @@ class CompetitionController extends AbstractController
         $message = 'OK';
         
         try {
-            $url = $request->request->get('url', 'https://www.rfbr.ru/rffi/ru/classifieds/o_2098490');
-            $RFBRService->addCompetitionByURL($url);
-        } catch (CompetitionException $e) {
+            $RFBRService->run();
+        } catch (Exception $e) {
             $status  = false;
             $message = $e->getMessage();
         }

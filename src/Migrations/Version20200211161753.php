@@ -27,7 +27,7 @@ final class Version20200211161753 extends AbstractMigration
         $this->addSql('ALTER TABLE support_sites_industry ADD CONSTRAINT FK_1905CF9A2B19A734 FOREIGN KEY (industry_id) REFERENCES industry (id)');
         $this->addSql('ALTER TABLE support_sites_industry ADD CONSTRAINT FK_1905CF9A4B881EBA FOREIGN KEY (support_site_id) REFERENCES support_site (id)');
         $this->addSql("INSERT INTO `support_site` (`id`, `name`, `abbreviation`, `url`, `competitions_page_url`) VALUES
-                                (1,	'Российский Фонд Фундаментальных Исследований',	'RFBR',	'https://www.rfbr.ru/rffi/ru',	'https://www.rfbr.ru/rffi/ru/contest');"
+                                (1,	'Российский Фонд Фундаментальных Исследований',	'RFBR',	'https://www.rfbr.ru',	'https://www.rfbr.ru/rffi/ru/contest_search?CONTEST_STATUS_ID=1&CONTEST_TYPE=-1&CONTEST_YEAR=-1');"
         );
         $this->addSql("INSERT INTO `support_sites_industry` (`id`, `industry_id`, `support_site_id`, `name`) VALUES
                                 (1,	1,	1,	'Математика, механика, информатика'),

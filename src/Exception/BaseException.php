@@ -16,6 +16,7 @@ class BaseException extends Exception
         //        0-99      simple exceptions
         0 => 'Application base exception',
         //        100-199   competition exceptions
+        //        200-299   support site exceptions
     ];
 
     protected array $additionalCodeMessageArray = [];

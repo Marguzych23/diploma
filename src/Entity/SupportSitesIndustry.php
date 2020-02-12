@@ -24,6 +24,11 @@ class SupportSitesIndustry
     private string $name;
 
     /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private array $keywords;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Industry", inversedBy="supportSitesIndustries")
      */
     private Industry $industry;
@@ -95,5 +100,21 @@ class SupportSitesIndustry
     public function setSupportSite(SupportSite $supportSite) : void
     {
         $this->supportSite = $supportSite;
+    }
+
+    /**
+     * @return array
+     */
+    public function getKeywords() : array
+    {
+        return $this->keywords;
+    }
+
+    /**
+     * @param array $keywords
+     */
+    public function setKeywords(array $keywords) : void
+    {
+        $this->keywords = $keywords;
     }
 }

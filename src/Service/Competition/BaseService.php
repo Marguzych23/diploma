@@ -4,27 +4,60 @@
 namespace App\Service\Competition;
 
 
-use App\Entity\Competition;
-use App\Entity\Industry;
+use App\Entity\SupportSite;
+use App\Entity\SupportSitesIndustry;
 use App\Exception\CompetitionException;
+use App\Exception\SupportSiteException;
 use App\Parser\Parser;
 use App\Service\DataLoadService;
 use Doctrine\ORM\EntityManagerInterface;
 
 abstract class BaseService
 {
-    protected DataLoadService          $dataLoadService;
+    const ABBREVIATION = '';
+
     protected Parser                   $parser;
     protected EntityManagerInterface   $entityManager;
 
+    protected ?SupportSite $supportSite = null;
+
+    /**
+     * BaseService constructor.
+     *
+     * @param Parser                 $parser
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(
         Parser $parser,
-        DataLoadService $dataLoadService,
         EntityManagerInterface $entityManager
     ) {
-        $this->parser          = $parser;
-        $this->dataLoadService = $dataLoadService;
-        $this->entityManager   = $entityManager;
+        $this->parser        = $parser;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Обязательно вызвать initRun()
+     *
+     * @return void
+     */
+    abstract public function run() : void;
+
+    /**
+     * @throws SupportSiteException
+     */
+    public function initRun()
+    {
+        /** @var SupportSite|null $supportSite */
+        $supportSite = $this->entityManager->getRepository(SupportSite::class)->findOneBy([
+            'abbreviation' => static::ABBREVIATION,
+        ]);
+
+        if ($supportSite === null) {
+            throw new SupportSiteException('', 201);
+        }
+
+        $this->supportSite = $supportSite;
+        $this->parser->setSupportSiteIndustries($supportSite->getSupportSitesIndustries()->toArray());
     }
 
     /**
@@ -32,17 +65,16 @@ abstract class BaseService
      *
      * @throws CompetitionException
      */
-    public function addCompetitionByURL(?string $url)
+    public function addCompetitionByURL(?string $url) : void
     {
-//        $data = $this->dataLoadService->loadFromURL($url);
-        $data = $this->dataLoadService->getHTML();
+        $data = DataLoadService::loadHTMLFromURL($url);
 
         $competition = $this->parser->parse($data);
 
 //        if ($this->entityManager->getRepository(Competition::class)->findOneBy([
 //                'requirements' => $competition->getRequirements(),
 //            ]) === null) {
-            var_dump($competition);
+        var_dump($competition);
 
 //            $industry = $this->entityManager->getRepository(Industry::class)->findOneBy([
 //                'id' => 1,
