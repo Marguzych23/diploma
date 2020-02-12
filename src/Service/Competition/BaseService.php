@@ -73,6 +73,7 @@ abstract class BaseService
             $competition = $this->parser->parse($data);
             $competition->setUrl($url);
 
+//            var_dump($competition);
             $this->entityManager->persist($competition);
             $this->entityManager->flush();
         }

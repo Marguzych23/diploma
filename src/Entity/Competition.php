@@ -5,6 +5,8 @@ namespace App\Entity;
 
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,30 +22,38 @@ class Competition
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $name = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Industry", inversedBy="competitions")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Industry", mappedBy="competitions")
      * @ORM\JoinTable(name="competitions_industries")
      */
-    private $industries = null;
+    private Collection $industries;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private ?DateTime $deadline = null;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=64, nullable=true)
      */
     private ?string $grantSize = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $url = null;
+
+    /**
+     * Competition constructor.
+     */
+    public function __construct()
+    {
+        $this->industries = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -78,19 +88,38 @@ class Competition
     }
 
     /**
-     * @return null
+     * @return Collection
      */
-    public function getIndustries()
+    public function getIndustries() : Collection
     {
         return $this->industries;
     }
 
     /**
-     * @param null $industries
+     * @param Collection $industries
+     *
+     * @return Competition
      */
-    public function setIndustries($industries) : void
+    public function setIndustries(Collection $industries) : self
     {
         $this->industries = $industries;
+
+        return $this;
+    }
+
+    /**
+     * @param Industry $industry
+     *
+     * @return Competition
+     */
+    public function addIndustry(Industry $industry) : self
+    {
+        if (!$this->industries->contains($industry)) {
+            $this->industries[] = $industry;
+            $industry->addCompetition($this);
+        }
+
+        return $this;
     }
 
     /**

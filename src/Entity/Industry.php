@@ -4,6 +4,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,18 +25,18 @@ class Industry
     private string $name;
 
     /**
-     * @var Competition[]|ArrayCollection
+     * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Competition", mappedBy="industry")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Competition", inversedBy="industry")
      */
-    private $competitions;
+    private Collection $competitions;
 
     /**
-     * @var SupportSitesIndustry[]|ArrayCollection
+     * @var Collection
      *
      * @ORM\OneToMany(targetEntity="App\Entity\SupportSitesIndustry", mappedBy="supportSite")
      */
-    private $supportSitesIndustries;
+    private Collection $supportSitesIndustries;
 
     /**
      * Industry constructor.
@@ -79,7 +80,7 @@ class Industry
     }
 
     /**
-     * @return Competition[]|ArrayCollection
+     * @return Collection
      */
     public function getCompetitions()
     {
@@ -87,15 +88,35 @@ class Industry
     }
 
     /**
-     * @param Competition[]|ArrayCollection $competitions
+     * @param Collection $competitions
+     *
+     * @return Industry
      */
-    public function setCompetitions($competitions) : void
+    public function setCompetitions($competitions) : self
     {
         $this->competitions = $competitions;
+
+        return $this;
+    }
+
+
+    /**
+     * @param Competition $competition
+     *
+     * @return Industry
+     */
+    public function addCompetition(Competition $competition) : self
+    {
+        if (!$this->competitions->contains($competition)) {
+            $this->competitions[] = $competition;
+            $competition->addIndustry($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @return SupportSitesIndustry[]|ArrayCollection
+     * @return Collection
      */
     public function getSupportSitesIndustries()
     {
@@ -103,10 +124,14 @@ class Industry
     }
 
     /**
-     * @param SupportSitesIndustry[]|ArrayCollection $supportSitesIndustries
+     * @param Collection $supportSitesIndustries
+     *
+     * @return Industry
      */
-    public function setSupportSitesIndustries($supportSitesIndustries) : void
+    public function setSupportSitesIndustries($supportSitesIndustries) : Industry
     {
         $this->supportSitesIndustries = $supportSitesIndustries;
+
+        return $this;
     }
 }

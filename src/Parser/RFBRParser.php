@@ -25,6 +25,11 @@ class RFBRParser extends Parser
     ];
     const INDUSTRIES_KEYS = ['(', ')'];
 
+    protected static array $filters_for_search_data = [
+        './/div[@id="selectable-content"]/p/strong',
+        './/div[@id="selectable-content"]/p',
+    ];
+
     /**
      * @param string $data
      *
@@ -41,7 +46,10 @@ class RFBRParser extends Parser
 //        Name
         $competition->setName($crawler->filterXPath('.//h1[@class="title js-print-title title"]')->text());
 
-//        Industries
+        $deadline  = null;
+        $grantSize = null;
+
+//        Search data
         $tempIndustries = [];
         try {
             $industriesContent = $crawler->filterXPath('.//div[@id="selectable-content"]/ul/li');
@@ -51,35 +59,47 @@ class RFBRParser extends Parser
             }
         } catch (InvalidArgumentException $exception) {
         }
-
-//        Other
-        $selectableContent = $crawler->filterXPath('.//div[@id="selectable-content"]/p/strong');
-        foreach ($selectableContent->getIterator() as $item) {
-            if ($competition->getDeadline() === null
-                && strpos($item->textContent, self::DEADLINE_KEY) !== false
-            ) {
-                $deadline = substr(
-                    trim(str_replace($item->textContent, '', $item->parentNode->textContent)),
-                    0, 16
-                );
-                try {
-                    $competition->setDeadline(new DateTime($deadline));
-                } catch (Exception $e) {
+        foreach (self::$filters_for_search_data as $filter_for_search_data) {
+            $selectableContent = $crawler->filterXPath($filter_for_search_data);
+            foreach ($selectableContent->getIterator() as $item) {
+                if ($deadline
+                    && strpos($item->textContent, self::DEADLINE_KEY) !== false
+                ) {
+                    $deadline = substr(
+                        trim(str_replace($item->textContent, '', $item->parentNode->textContent)),
+                        0, 16
+                    );
+                } elseif ($grantSize === null
+                    && $this->isInArray($item->textContent, self::GRANT_SIZE_KEYS)
+                ) {
+                    $childText = $item->textContent . (strpos($item->textContent, ':') !== false ? '' : ':');
+                    $grantSize = trim(str_replace($childText, '', $item->parentNode->textContent));
+                    if (empty($grantSize)) {
+                        foreach (self::GRANT_SIZE_KEYS as $key) {
+                            if (strpos($item->textContent, $key) !== false) {
+                                $grantSize = trim(str_replace($key . ':', '', $item->textContent));
+                                break;
+                            }
+                        }
+                    }
+                } elseif ($this->isInArray($item->textContent, self::INDUSTRIES_KEYS, true)) {  // industry
+                    $tempIndustries[] = $item->textContent;
+                } elseif ($deadline !== null && $grantSize !== null && !empty($tempIndustries)) {
+                    break;
                 }
-            } elseif ($competition->getGrantSize() === null
-                && $this->isInArray($item->textContent, self::GRANT_SIZE_KEYS)
-            ) {
-                $childText = $item->textContent . (strpos($item->textContent, ':') !== false ? '' : ':');
-                $competition->setGrantSize(trim(str_replace($childText, '', $item->parentNode->textContent)));
-            } elseif ($this->isInArray($item->textContent, self::INDUSTRIES_KEYS, true)) {  // industry
-                $tempIndustries[] = $item->textContent;
             }
         }
-
+//        Deadline set
+        try {
+            $competition->setDeadline(new DateTime($deadline));
+        } catch (Exception $e) {
+        }
+//        Grant size set
+        $competition->setGrantSize($grantSize);
+//        Industries set
         if (empty($tempIndustries)) {
             throw new CompetitionException();
         } else {
-            $industries = [];
             foreach ($tempIndustries as $tempIndustry) {
                 foreach ($this->getSupportSiteIndustries() as $supportSiteIndustry) {
                     $isMatch = false;
@@ -90,11 +110,10 @@ class RFBRParser extends Parser
                         }
                     }
                     if ($isMatch) {
-                        $industries[] = $supportSiteIndustry->getIndustry();
+                        $competition->addIndustry($supportSiteIndustry->getIndustry());
                     }
                 }
             }
-            $competition->setIndustries($industries);
         }
 
         return $competition;

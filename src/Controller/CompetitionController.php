@@ -4,38 +4,37 @@
 namespace App\Controller;
 
 
-use App\Entity\Competition;
-use App\Entity\Industry;
-use App\Entity\SupportSite;
-use App\Entity\SupportSitesIndustry;
 use App\Service\Competition\RFBRService;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use App\Service\Competition\ServiceFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Throwable;
 
 class CompetitionController extends AbstractController
 {
 
     /**
-     * @Route("/competition/add", name="add_competition")
-     * @param RFBRService            $RFBRService
-     *
-     * @param EntityManagerInterface $entityManager
+     * @Route("/competition/run", name="run_competition")
+     * @param Request        $request
+     * @param ServiceFactory $serviceFactory
      *
      * @return Response
      */
     public function parseAction(
-        RFBRService $RFBRService
+        Request $request,
+        ServiceFactory $serviceFactory
     ) : Response {
         $status  = true;
         $message = 'OK';
 
+
         try {
-            $RFBRService->run();
-        } catch (Exception $e) {
+            $type    = $request->get('type', RFBRService::ABBREVIATION);
+            $service = $serviceFactory::create($type);
+            $service->run();
+        } catch (Throwable $e) {
             $status  = false;
             $message = $e->getMessage();
         }
