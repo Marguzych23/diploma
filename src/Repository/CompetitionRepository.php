@@ -23,7 +23,7 @@ class CompetitionRepository extends ServiceEntityRepository
     public function getActualCompetitions()
     {
         return $this->_em
-            ->createQuery("SELECT u FROM App\Entity\Competition u WHERE u.deadline <= CURRENT_DATE()")
+            ->createQuery("SELECT u FROM App\Entity\Competition u WHERE u.deadline >= CURRENT_DATE()")
             ->getResult();
     }
 }
