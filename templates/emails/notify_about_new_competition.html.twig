@@ -1,0 +1,12 @@
+<h3>Появились новые конкурсы!</h3>
+
+Добрый день, {{ name }}! Появились новые конкурсы в отраслях, на котрые вы подписались:
+
+{% for industry in industries %}
+    <p>{{ industry['name'] }}</p>
+    <ul>
+        {% for competition in industry['competitions'] %}
+            <li><a href="{{ competition['url'] }}">{{ competition['name'] }}</a></li>
+        {% endfor %}
+    </ul>
+{% endfor %}

@@ -8,11 +8,12 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompetitionRepository")
  */
-class Competition
+class Competition implements JsonSerializable
 {
     /**
      * @ORM\Id
@@ -168,5 +169,18 @@ class Competition
     public function setUrl(?string $url) : void
     {
         $this->url = $url;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'name'       => $this->getName(),
+            'grant_size' => $this->getGrantSize(),
+            'url'        => $this->getUrl(),
+            'deadline'   => $this->getDeadline(),
+        ];
     }
 }
